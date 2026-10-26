@@ -6,10 +6,9 @@ import com.DigitalBoardMembers.DigitalBoard.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
-
 public class UserMappers {
 
-    public User toEntity(UserRequestDTO dto){
+    public User toEntity(UserRequestDTO dto) {
         if (dto == null) return null;
 
         User user = new User();
@@ -20,18 +19,15 @@ public class UserMappers {
         return user;
     }
 
-    public UserResponseDTO toResponseDTO(User entity){
+    public UserResponseDTO toResponseDTO(User entity) {
         if (entity == null) return null;
 
         return new UserResponseDTO(
                 entity.getId(),
                 entity.getName(),
-                entity.getEmail()
+                entity.getEmail(),
+                entity.getRole(),
+                entity.getCreatedAt()
         );
-
-
     }
-
-
-
 }

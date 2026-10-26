@@ -8,10 +8,9 @@ import com.DigitalBoardMembers.DigitalBoard.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
+public class CommentMappers {
 
-public class CommentMappers{
-
-    public Comment toEntity(CommentRequestDTO dto, Post post, User user){
+    public Comment toEntity(CommentRequestDTO dto, Post post, User user) {
         if (dto == null) return null;
 
         Comment comment = new Comment();
@@ -24,7 +23,7 @@ public class CommentMappers{
         return comment;
     }
 
-    public CommentResponseDTO toResponseDTO(Comment entity){
+    public CommentResponseDTO toResponseDTO(Comment entity) {
         if (entity == null) return null;
 
         return new CommentResponseDTO(
@@ -33,9 +32,9 @@ public class CommentMappers{
                 entity.getImage(),
                 entity.getCommentPost() != null ? entity.getCommentPost().getId() : null,
                 entity.getCommentUser() != null ? entity.getCommentUser().getId() : null,
-                entity.getCommentUser() != null ? entity.getCommentUser().getName() : null
-
+                entity.getCommentUser() != null ? entity.getCommentUser().getName() : null,
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
-
     }
 }

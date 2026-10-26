@@ -7,9 +7,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByPostTopicId(Long topicId);
 
+    boolean existsByPostTopicId(Long topicId);
+
+    List<Post> findByPostUserId(Long userId);
 }

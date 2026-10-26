@@ -8,8 +8,12 @@ import java.util.List;
 public interface TopicService {
 
     TopicResponseDTO createTopic(TopicRequestDTO request);
-    TopicResponseDTO getTopicById(Long id);
-    List<TopicResponseDTO> getAllTopics();
-    void deleteTopic(Long id);
 
+    TopicResponseDTO getTopicById(Long id);
+
+    List<TopicResponseDTO> getAllTopics();
+
+    TopicResponseDTO updateTopic(Long id, TopicRequestDTO request);
+
+    void deleteTopic(Long id);
 }

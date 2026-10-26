@@ -5,6 +5,7 @@ import com.DigitalBoardMembers.DigitalBoard.dto.response.PostResponseDTO;
 import com.DigitalBoardMembers.DigitalBoard.entity.Post;
 import com.DigitalBoardMembers.DigitalBoard.entity.Topic;
 import com.DigitalBoardMembers.DigitalBoard.entity.User;
+import com.DigitalBoardMembers.DigitalBoard.exceptions.ResourceNotFoundException;
 import com.DigitalBoardMembers.DigitalBoard.mappers.PostMappers;
 import com.DigitalBoardMembers.DigitalBoard.repository.PostRepository;
 import com.DigitalBoardMembers.DigitalBoard.repository.TopicRepository;
@@ -14,11 +15,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
@@ -30,13 +31,12 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponseDTO createPost(PostRequestDTO request) {
         User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con el ID: " + request.userId()));
 
         Topic topic = topicRepository.findById(request.topicId())
-                .orElseThrow(() -> new RuntimeException("Topic no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Tema no encontrado con el ID: " + request.topicId()));
 
-
-        Post post = postMappers.toEntity(request, topic, user );
+        Post post = postMappers.toEntity(request, topic, user);
         Post savedPost = postRepository.save(post);
 
         return postMappers.toResponseDTO(savedPost);
@@ -46,13 +46,17 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public PostResponseDTO getPostById(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Publicación no encontrada con el ID: " + id));
         return postMappers.toResponseDTO(post);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PostResponseDTO> getPostsByTopicId(Long topicId) {
+        if (!topicRepository.existsById(topicId)) {
+            throw new ResourceNotFoundException("Tema no encontrado con el ID: " + topicId);
+        }
+
         return postRepository.findByPostTopicId(topicId)
                 .stream()
                 .map(postMappers::toResponseDTO)
@@ -61,29 +65,33 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponseDTO updatePost(Long id, PostRequestDTO request){
+    public PostResponseDTO updatePost(Long id, PostRequestDTO request) {
         Post existingPost = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Publicación no encontrada con el ID: " + id));
 
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con el ID: " + request.userId()));
 
-        Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tema inexistente"));
+        Topic topic = topicRepository.findById(request.topicId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tema no encontrado con el ID: " + request.topicId()));
 
-        Post updatePost = postMappers.toEntity(request, topic, user);
-        updatePost.setId(existingPost.getId());
+        existingPost.setTitle(request.title());
+        existingPost.setDescription(request.description());
+        existingPost.setImageUrl(request.image());
+        existingPost.setPostUser(user);
+        existingPost.setPostTopic(topic);
+        existingPost.setUpdateAt(LocalDate.now());
 
-        Post savedPost = postRepository.save(updatePost);
+        Post savedPost = postRepository.save(existingPost);
         return postMappers.toResponseDTO(savedPost);
     }
 
     @Override
+    @Transactional
     public void deletePost(Long id) {
-        if (!postRepository.existsById(id)){
-        throw new RuntimeException("Post no encontrado con el ID: " + id);
+        if (!postRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Publicación no encontrada con el ID: " + id);
         }
         postRepository.deleteById(id);
     }
-
 }

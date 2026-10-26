@@ -8,10 +8,9 @@ import com.DigitalBoardMembers.DigitalBoard.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
+public class PostMappers {
 
-public class PostMappers{
-
-    public Post toEntity(PostRequestDTO dto, Topic topic, User user ){
+    public Post toEntity(PostRequestDTO dto, Topic topic, User user) {
         if (dto == null) return null;
 
         Post post = new Post();
@@ -25,7 +24,7 @@ public class PostMappers{
         return post;
     }
 
-    public PostResponseDTO toResponseDTO(Post post){
+    public PostResponseDTO toResponseDTO(Post post) {
         if (post == null) return null;
 
         return new PostResponseDTO(
@@ -36,9 +35,9 @@ public class PostMappers{
                 post.getPostUser() != null ? post.getPostUser().getId() : null,
                 post.getPostUser() != null ? post.getPostUser().getName() : null,
                 post.getPostTopic() != null ? post.getPostTopic().getId() : null,
-                post.getPostTopic() != null ? post.getPostTopic().getTopicName() : null
-
+                post.getPostTopic() != null ? post.getPostTopic().getTopicName() : null,
+                post.getCreatedAt(),
+                post.getUpdateAt()
         );
     }
-
 }

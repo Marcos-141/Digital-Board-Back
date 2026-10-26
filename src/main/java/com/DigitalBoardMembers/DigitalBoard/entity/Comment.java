@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.mapping.Join;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 
@@ -13,7 +14,6 @@ import java.time.LocalDate;
 @Setter
 @Table(name = "comments")
 @NoArgsConstructor
-
 public class Comment {
 
     @Id
@@ -26,9 +26,11 @@ public class Comment {
     @Column(name = "image")
     private String image;
 
-    @Column(name = "creation_date")
+    @CreationTimestamp
+    @Column(name = "creation_date", updatable = false)
     private LocalDate createdAt;
 
+    @UpdateTimestamp
     @Column(name = "last_update")
     private LocalDate updatedAt;
 

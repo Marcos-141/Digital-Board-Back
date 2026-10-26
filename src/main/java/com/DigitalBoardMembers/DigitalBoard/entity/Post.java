@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,7 +15,6 @@ import java.util.List;
 @Setter
 @Table(name = "posts")
 @NoArgsConstructor
-
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,14 +29,16 @@ public class Post {
     @Column(name = "image")
     private String imageUrl;
 
-    @Column(name = "creation_date")
+    @CreationTimestamp
+    @Column(name = "creation_date", updatable = false)
     private LocalDate createdAt;
 
+    @UpdateTimestamp
     @Column(name = "last_update")
     private LocalDate updateAt;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false )
+    @JoinColumn(name = "user_id", nullable = false)
     private User postUser;
 
     @ManyToOne(optional = false)
