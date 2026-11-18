@@ -1,5 +1,6 @@
 package com.DigitalBoardMembers.DigitalBoard.config;
 
+import com.DigitalBoardMembers.DigitalBoard.controllers.ApiConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -37,7 +38,7 @@ public class SecurityConfig {
 
                 // 2. Gestion de sesiones sin estado (Stateless)
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
 
                 // 3. Reglas de autorizacion de endpoints
@@ -51,6 +52,7 @@ public class SecurityConfig {
                         ).permitAll()
                         // Consola H2
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers(ApiConstants.AUTH + "/**").permitAll()
                         // Endpoints de la API REST
                         .requestMatchers("/api/v1/**").permitAll()
                         // Cualquier otra peticion
