@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface UserService {
         UserResponseDTO createUser (UserRequestDTO request);
+        UserResponseDTO createTeacher(UserRequestDTO request);
         UserResponseDTO getUserById(Long id);
         List<UserResponseDTO> getAllUsers();
         UserResponseDTO updateUser(Long id, UserRequestDTO request);
