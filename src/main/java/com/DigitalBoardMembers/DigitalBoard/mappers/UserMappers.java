@@ -3,6 +3,7 @@ package com.DigitalBoardMembers.DigitalBoard.mappers;
 import com.DigitalBoardMembers.DigitalBoard.dto.request.UserRequestDTO;
 import com.DigitalBoardMembers.DigitalBoard.dto.response.UserResponseDTO;
 import com.DigitalBoardMembers.DigitalBoard.entity.User;
+import com.DigitalBoardMembers.DigitalBoard.entity.RoleName;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,7 +27,7 @@ public class UserMappers {
                 entity.getId(),
                 entity.getName(),
                 entity.getEmail(),
-                entity.getRole(),
+                entity.getRole() == null ? RoleName.STUDENT : entity.getRole(),
                 entity.getCreatedAt()
         );
     }

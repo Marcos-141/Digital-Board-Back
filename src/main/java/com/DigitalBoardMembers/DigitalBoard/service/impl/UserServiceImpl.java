@@ -29,14 +29,22 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO request) {
+        return createUserWithRole(request, RoleName.STUDENT);
+    }
+
+    @Override
+    @Transactional
+    public UserResponseDTO createTeacher(UserRequestDTO request) {
+        return createUserWithRole(request, RoleName.TEACHER);
+    }
+
+    private UserResponseDTO createUserWithRole(UserRequestDTO request, RoleName role) {
         if (userRepository.existsByEmail(request.email())) {
             throw new DuplicateResourceException("El email ya se encuentra registrado: " + request.email());
         }
 
         User user = userMappers.toEntity(request);
-        if (user.getRole() == null) {
-            user.setRole(RoleName.STUDENT);
-        }
+        user.setRole(role);
         user.setPassword(passwordEncoder.encode(request.password()));
 
         User savedUser = userRepository.save(user);

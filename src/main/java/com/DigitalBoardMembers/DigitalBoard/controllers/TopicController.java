@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class TopicController {
     private final TopicService topicService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<TopicResponseDTO> createTopic(@Valid @RequestBody TopicRequestDTO request) {
         TopicResponseDTO response = topicService.createTopic(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -37,12 +39,14 @@ public class TopicController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<TopicResponseDTO> updateTopic(@PathVariable Long id, @Valid @RequestBody TopicRequestDTO request) {
         TopicResponseDTO response = topicService.updateTopic(id, request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<Void> deleteTopic(@PathVariable Long id) {
         topicService.deleteTopic(id);
         return ResponseEntity.noContent().build();
